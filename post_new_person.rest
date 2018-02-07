@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+  "name": "Miksutin",
+  "number": "459999999",
+  "id": "Math.random()*(6 - 100) + 6"
+}
