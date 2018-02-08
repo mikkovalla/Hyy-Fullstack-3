@@ -5,12 +5,14 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 
+
 app.use(bodyParser.json())
 //app.use(morgan('tiny'))
 //alla morgan loggerin kustomoitu logger joka palauttaa logissa myös pyynnön rungon
 app.use(morgan(
   ':method :url :req-body :status :res[content-length] - :response-time ms'))
 app.use(cors())
+app.use(express.static('build'))
 
 let persons = [{
     "name": "Arto Hellas",
