@@ -5,7 +5,10 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 
 app.use(bodyParser.json())
-app.use(morgan('tiny'))
+//app.use(morgan('tiny'))
+//alla morgan loggerin kustomoitu logger joka palauttaa logissa myös pyynnön rungon
+app.use(morgan(
+  ':method :url :req-body :status :res[content-length] - :response-time ms'))
 
 let persons = [{
     "name": "Arto Hellas",
@@ -34,13 +37,13 @@ let persons = [{
   }
 ]
 
-morgan.token('type', function (req, res) {
-  return req.headers['content-type']
+// morgan kustomoitu lisä loggaukseen
+morgan.token('req-body', function (req, res) {
+  return (JSON.stringify(req.body))
 })
 
 app.get('/', (req, res) => {
   res.send('<h1>puhelinluettelo</h1>')
-  morgan.token()
 })
 
 app.get('/info', (req, res) => {
@@ -57,7 +60,6 @@ app.get('/api/persons/:id', (req, res) => {
 
   if (person) {
     res.json(person)
-    morgan.token()
   } else {
     res.status(404).end()
   }
@@ -110,7 +112,6 @@ app.post('/api/persons', (req, res) => {
   persons = persons.concat(hlo)
   console.log(hlo)
   res.json(hlo)
-  morgan.token()
 })
 
 const PORT = 3001
