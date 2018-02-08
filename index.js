@@ -60,13 +60,50 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
+const uusiId = () => {
+  const uusinId = Math.floor(Math.random() * 100) + persons.length
+  return uusinId
+}
+
 app.post('/api/persons', (req, res) => {
+
   const person = req.body
   console.log(person)
+  console.log(uusiId())
 
-  res.json(person)
+  if(person.name === undefined) {
+    return res.status(400).json({
+      error: 'Henkilöllä pitää olla nimi'
+    })
+  }
+  if(person.number === undefined) {
+    return res.status(400).json({
+      error: 'puhelin numero puuttuu'
+    })
+  }
+  const uusiNimi = person.name.toUpperCase()
+
+  const onkoOlemassa = persons.find(p => p.name.toUpperCase() === uusiNimi)
+  console.log(onkoOlemassa)
+
+  if(onkoOlemassa) {
+    return res.status(400).json({
+      error: 'Henkilöllä on jo numero'
+    })
+  }
+  
+  const hlo = {
+    name: person.name,
+    number: person.number,
+    id: uusiId()
+  }
+
+  persons = persons.concat(hlo)
+  console.log(hlo)
+  res.json(hlo)
 })
 
-const port = 3001
-app.listen(port)
-console.log(`Server running on port ${port}`)
+const PORT = 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
