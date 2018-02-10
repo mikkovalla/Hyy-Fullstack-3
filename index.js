@@ -4,6 +4,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 
 app.use(bodyParser.json())
@@ -41,6 +42,15 @@ let persons = [{
   }
 ]
 
+//mongoose helpperi funktio
+const formatPerson = (person) => {
+  return {
+    name: person.name,
+    number: person.number,
+    id: person._id
+  }
+}
+
 // morgan kustomoitu lisä loggaukseen
 morgan.token('req-body', function (req, res) {
   return (JSON.stringify(req.body))
@@ -55,7 +65,11 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-  res.send(persons)
+  Person
+    .find({})
+    .then(pe => {
+      res.json(pe.map(formatPerson))
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
