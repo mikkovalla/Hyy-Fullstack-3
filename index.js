@@ -4,7 +4,9 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
-const Person = require('./models/person')
+const {
+  Person
+} = require('./models/person')
 
 
 app.use(bodyParser.json())
@@ -64,15 +66,23 @@ app.get('/info', (req, res) => {
   res.send('<p>puhelinluettelossa on ' + persons.length + ' henkilön tiedot</p>')
 })
 
-app.get('/api/persons', (req, res) => {
-  Person
+app.get('/api/persons', async (req, res) => {
+  
+  try {
+    const people = await Person.find({})
+  res.json(people)
+  } catch (error){
+    console.log(error)
+  }
+  
+  /*Person
     .find({})
     .then(pe => {
       res.json(pe.map(formatPerson))
     })
     .catch(error => {
       console.log('error', error)
-    })
+    })*/
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -124,7 +134,7 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  const hlo = new Person ({
+  const hlo = new Person({
     name: person.name,
     number: person.number
   })
