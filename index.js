@@ -63,7 +63,12 @@ app.get('/', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-  res.send('<p>puhelinluettelossa on ' + persons.length + ' henkilön tiedot</p>')
+  Person
+  .find({})
+  .then(r =>{
+    return res.send('<p>puhelinluettelossa on ' + r.length + ' henkilön tiedot</p>')
+  })
+  
 })
 
 app.get('/api/persons', (req, res) => {
@@ -113,7 +118,9 @@ app.put('/api/persons/:id', (req, res) => {
   }
 
   Person
-    .findByIdAndUpdate(req.params.id, person, { number: body.number })
+    .findByIdAndUpdate(req.params.id, person, {
+      number: body.number
+    })
     .then(paivitetty => {
       res.json(formatPerson(paivitetty))
     })
@@ -148,7 +155,7 @@ app.post('/api/persons', (req, res) => {
 
   if (onkoOlemassa) {
     return res.status(400).json({
-      error: 'Henkilöllä on jo numero'
+      error: 'Henkilöllä on jo numero!'
     })
   }
 
@@ -157,15 +164,39 @@ app.post('/api/persons', (req, res) => {
     number: person.number
   })
 
-  hlo
+  Person
+    .find({
+      name: person.name
+    })
+    .then(result => {
+      console.log('result', result)
+      if (result.length === 0) {
+        return hlo
+          .save()
+          .then(response => {
+            console.log(`lisätään henkilö ${person.name} numero ${person.number} luetteloon`)
+            res.json(hlo)
+          })
+      } else {
+        return res.status(404).send({
+          error: 'henkilö on jo puhelin luettelossa'
+        })
+      }
+    })
+
+  //vanhan tehtävän koodi jätetty kummittelemaan...
+  /*hlo
     .save()
     .then(response => {
       console.log(`lisätään henkilö ${person.name} numero ${person.number} luetteloon`)
       res.json(hlo)
     })
     .catch(error => {
-      console.log('virhe', error)
-    })
+      console.log(error)
+      res.status(404).send({
+        error: 'henkilö on jo puhelin luettelossa'
+      })
+    })*/
 })
 
 //port fix for heroku
