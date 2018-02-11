@@ -1,6 +1,8 @@
-require('dotenv').config()
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 const url = process.env.MONGODB_URL
 
@@ -21,7 +23,7 @@ const toJson = {
 const personSchema = new Schema({
   name: String,
   number: String
-}/*, { toJson }*/)
+} /*, { toJson }*/ )
 
 const Person = mongoose.model('Person', personSchema)
 
