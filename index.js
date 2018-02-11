@@ -68,21 +68,21 @@ app.get('/info', (req, res) => {
 
 app.get('/api/persons', async (req, res) => {
   
-  try {
+  /*try {
     const people = await Person.find({})
   res.json(people)
   } catch (error){
     console.log(error)
-  }
+  }*/
   
-  /*Person
+  Person
     .find({})
     .then(pe => {
       res.json(pe.map(formatPerson))
     })
     .catch(error => {
       console.log('error', error)
-    })*/
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {

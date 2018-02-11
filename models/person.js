@@ -6,7 +6,7 @@ const url = process.env.MONGODB_URL
 
 mongoose.connect(url)
 
-//thanks to stackoverflow again...
+/*thanks to stackoverflow again...
 const toJson = {
   transform: (document, {
     _id,
@@ -16,12 +16,12 @@ const toJson = {
     id: _id,
     ...rest
   })
-}
+}*/
 
 const personSchema = new Schema({
   name: String,
   number: String
-}, { toJson })
+}/*, { toJson }*/)
 
 const Person = mongoose.model('Person', personSchema)
 
