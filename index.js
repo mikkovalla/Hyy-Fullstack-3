@@ -79,7 +79,7 @@ app.get('/api/persons/:id', (req, res) => {
     .findById(req.params.id)
     .then(pe => {
       if (pe) {
-        res.json(formatPerson())
+        res.json(formatPerson(pe))
       } else {
         res.status(404).end()
       }
