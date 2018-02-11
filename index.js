@@ -66,46 +66,43 @@ app.get('/info', (req, res) => {
   res.send('<p>puhelinluettelossa on ' + persons.length + ' henkilön tiedot</p>')
 })
 
-app.get('/api/persons', async (req, res) => {
-  
-  /*try {
-    const people = await Person.find({})
-  res.json(people)
-  } catch (error){
-    console.log(error)
-  }*/
-  
+app.get('/api/persons', (req, res) => {
   Person
     .find({})
     .then(pe => {
       res.json(pe.map(formatPerson))
     })
-    .catch(error => {
-      console.log('error', error)
-    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(p => p.id === id)
-
-  if (person) {
-    res.json(person)
-  } else {
-    res.status(404).end()
-  }
+  Person
+    .findById(req.params.id)
+    .then(pe => {
+      if (pe) {
+        res.json(formatPerson())
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => {
+      res.status(404).send({
+        error: 'malformatted id'
+      })
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  persons = persons.filter(p => p.id !== id)
-  res.status(204).end()
+  Person
+    .findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => {
+      res.status(404).send({
+        error: 'malformatted id'
+      })
+    })
 })
-
-const uusiId = () => {
-  const uusinId = Math.floor(Math.random() * 100) + persons.length
-  return uusinId
-}
 
 app.post('/api/persons', (req, res) => {
 
@@ -148,9 +145,6 @@ app.post('/api/persons', (req, res) => {
     .catch(error => {
       console.log('virhe', error)
     })
-  /*persons = persons.concat(hlo)
-  console.log(hlo)
-  res.json(hlo)*/
 })
 
 //port fix for heroku
