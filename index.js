@@ -70,6 +70,9 @@ app.get('/api/persons', (req, res) => {
     .then(pe => {
       res.json(pe.map(formatPerson))
     })
+    .catch(error => {
+      console.log('error', error)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -97,8 +100,8 @@ const uusiId = () => {
 app.post('/api/persons', (req, res) => {
 
   const person = req.body
-  console.log(person)
-  console.log(uusiId())
+  //console.log(person)
+  //console.log(uusiId())
 
   if (person.name === undefined) {
     return res.status(400).json({
@@ -113,7 +116,7 @@ app.post('/api/persons', (req, res) => {
   const uusiNimi = person.name.toUpperCase()
 
   const onkoOlemassa = persons.find(p => p.name.toUpperCase() === uusiNimi)
-  console.log(onkoOlemassa)
+  //console.log(onkoOlemassa)
 
   if (onkoOlemassa) {
     return res.status(400).json({
@@ -121,15 +124,23 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  const hlo = {
+  const hlo = new Person ({
     name: person.name,
-    number: person.number,
-    id: uusiId()
-  }
+    number: person.number
+  })
 
-  persons = persons.concat(hlo)
+  hlo
+    .save()
+    .then(response => {
+      console.log(`lisätään henkilö ${person.name} numero ${person.number} luetteloon`)
+      res.json(hlo)
+    })
+    .catch(error => {
+      console.log('virhe', error)
+    })
+  /*persons = persons.concat(hlo)
   console.log(hlo)
-  res.json(hlo)
+  res.json(hlo)*/
 })
 
 //port fix for heroku
