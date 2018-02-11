@@ -104,6 +104,27 @@ app.delete('/api/persons/:id', (req, res) => {
     })
 })
 
+app.put('/api/persons/:id', (req, res) => {
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person
+    .findByIdAndUpdate(req.params.id, person, { number: body.number })
+    .then(paivitetty => {
+      res.json(formatPerson(paivitetty))
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(404).send({
+        error: 'malformatted id'
+      })
+    })
+})
+
 app.post('/api/persons', (req, res) => {
 
   const person = req.body
